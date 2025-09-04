@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
   res.cookies.set("sb_last", swapId, {
     maxAge: constants.LAST_TOUCH_TTL_SECONDS,
     httpOnly: true,
-    sameSite: "Lax",
+    sameSite: "lax",
     secure: true,
     path: "/",
   });

@@ -3,7 +3,6 @@ import { env } from "@/lib/env";
 import { makeWebhookValidator, type WhopWebhookRequestBody } from "@whop/api";
 import { prisma } from "@/lib/db";
 import { parseAndVerifySignedToken } from "@/lib/crypto";
-import { env } from "@/lib/env";
 
 // In-memory idempotency cache for dev; replace with persistent store in production
 const seenEventIds = new Set<string>();

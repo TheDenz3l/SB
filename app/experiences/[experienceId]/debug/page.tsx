@@ -9,7 +9,7 @@ export default function DebugExperience(){
 
   React.useEffect(()=>{
     let mounted = true;
-    sdk.getTopLevelUrlData().then(d => {
+    sdk.getTopLevelUrlData({}).then(d => {
       if (!mounted) return;
       setInfo(d);
     }).catch(e => {

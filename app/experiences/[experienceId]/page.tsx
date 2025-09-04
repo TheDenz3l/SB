@@ -18,6 +18,7 @@ export default function ExperiencePage(){
   const [needsOnboarding, setNeedsOnboarding] = React.useState(false);
 
   React.useEffect(() => {
+    if (!iframeSdk) return;
     let mounted = true;
     iframeSdk.getTopLevelUrlData({}).then((data: any) => {
       if (!mounted) return;

@@ -24,6 +24,7 @@ export default function Billing(){
   const [buying, setBuying] = React.useState<string | null>(null);
 
   React.useEffect(()=>{
+    if (!iframeSdk) return;
     iframeSdk.getTopLevelUrlData({})
       .then((d: any)=> setExperienceId(d.experienceId))
       .catch(()=> {
@@ -47,10 +48,12 @@ export default function Billing(){
   },[experienceId]);
 
   async function buy(planId: string){
+    if (!iframeSdk) return;
+    const sdk = iframeSdk as any;
     if (!planId) return;
     setBuying(planId);
     try {
-      const res = await iframeSdk.inAppPurchase({ planId });
+      const res = await sdk.inAppPurchase({ planId });
       if (res.status === 'ok') {
         // webhook will grant credits; refresh after a short delay
         setTimeout(()=> experienceId && fetch(`/api/boosts?experienceId=${experienceId}`).then(r=>r.json()).then(j=> setBoosts({ activeCredits: j.activeCredits })).catch(()=>{}), 1500);

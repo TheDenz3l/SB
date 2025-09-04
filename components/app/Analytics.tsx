@@ -30,6 +30,7 @@ export default function Analytics(){
   const [partners, setPartners] = React.useState<any[] | null>(null);
 
   React.useEffect(()=>{ 
+    if (!iframeSdk) return;
     iframeSdk.getTopLevelUrlData({})
       .then((d: any)=> setExperienceId(d.experienceId))
       .catch(()=> {

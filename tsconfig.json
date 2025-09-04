@@ -33,8 +33,10 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
+    "**/*.d.ts",
     ".next/types/**/*.ts",
-    ".next-local-user/types/**/*.ts"
+    ".next-local-user/types/**/*.ts",
+    ".next-user-501/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

@@ -89,3 +89,14 @@ After making changes:
 1. Check [Supabase Status](https://status.supabase.com/)
 2. Visit the [Supabase Discord](https://discord.supabase.com/)
 3. Review [Supabase Database docs](https://supabase.com/docs/guides/database)
+
+## Vercel Build Issues
+
+- Type error: `Expected 1 arguments, but got 0` at `getTopLevelUrlData`
+  - Cause: Different `@whop/iframe` versions disagree on whether the options argument is required.
+  - Fix: This repo ships `types/whop-iframe-shim.d.ts` to widen the signature to accept an optional argument. Client code calls `getTopLevelUrlData({})` for forward compatibility.
+  - Last resort: set env `NEXT_IGNORE_TYPE_ERRORS=1` to bypass third‑party type noise during build.
+
+- Permission denied writing `.next*` locally
+  - Cause: a previous build created `.next-*` as `root`.
+  - Fix: `next.config.mjs` now probes writability and falls back to `.next`. Override with `NEXT_DIST_DIR` if needed.

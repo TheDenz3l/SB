@@ -99,6 +99,8 @@ If the build fails:
 1. Check that all environment variables are properly set
 2. Verify pnpm dependencies are correctly installed
 3. Ensure the build command is `pnpm build`
+4. If you see TypeScript errors from `@whop/*` SDK types (e.g. `Expected 1 arguments, but got 0` on `getTopLevelUrlData`), set an env var `NEXT_IGNORE_TYPE_ERRORS=1` in Vercel to bypass third‑party type noise. This repo ships a local type shim to avoid this.
+5. If you hit permission errors writing `.next`, set `NEXT_DIST_DIR` to a writable folder (e.g. `.next`) — the config auto‑falls back to a user‑writable dist dir.
 
 ## Production Best Practices
 

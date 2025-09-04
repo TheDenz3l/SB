@@ -3,6 +3,7 @@ import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TBody, THead, TH, TR, TD } from "@/components/ui/table";
 import { useIframeSdk } from "@/lib/whop-compat";
+import { useParams } from "next/navigation";
 
 function KPI({ label, value }: { label: string; value: string }){
   return (
@@ -20,6 +21,7 @@ function fmtCurrencyCents(n: number){
 
 export default function Analytics(){
   const iframeSdk = useIframeSdk();
+  const params = useParams<{ experienceId: string }>();
   const [experienceId, setExperienceId] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
@@ -27,7 +29,15 @@ export default function Analytics(){
   const [weekly, setWeekly] = React.useState<number[] | null>(null);
   const [partners, setPartners] = React.useState<any[] | null>(null);
 
-  React.useEffect(()=>{ iframeSdk.getTopLevelUrlData({}).then((d: any)=> setExperienceId(d.experienceId)).catch(()=> setError('Missing context')); },[iframeSdk]);
+  React.useEffect(()=>{ 
+    iframeSdk.getTopLevelUrlData({})
+      .then((d: any)=> setExperienceId(d.experienceId))
+      .catch(()=> {
+        // Fallback to route param when not embedded
+        if (params?.experienceId) setExperienceId(params.experienceId as string);
+        else setError('Missing context');
+      }); 
+  },[iframeSdk, params?.experienceId]);
 
   React.useEffect(()=>{
     if (!experienceId) return;

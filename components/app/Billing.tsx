@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TBody, THead, TH, TR, TD } from "@/components/ui/table";
 import { useIframeSdk } from "@/lib/whop-compat";
+import { useParams } from "next/navigation";
 
 type Invoice = { id: string; periodStart: string; periodEnd: string; successFeeCents: number; minimumCents: number; amountDueCents: number; status: string };
 
@@ -14,6 +15,7 @@ function periodLabel(s: string, e: string){
 
 export default function Billing(){
   const iframeSdk = useIframeSdk();
+  const params = useParams<{ experienceId: string }>();
   const [experienceId, setExperienceId] = React.useState<string | null>(null);
   const [summary, setSummary] = React.useState<Invoice | null>(null);
   const [invoices, setInvoices] = React.useState<Invoice[] | null>(null);
@@ -22,8 +24,14 @@ export default function Billing(){
   const [buying, setBuying] = React.useState<string | null>(null);
 
   React.useEffect(()=>{
-    iframeSdk.getTopLevelUrlData({}).then((d: any)=> setExperienceId(d.experienceId)).catch(()=> setError('Missing context'));
-  },[iframeSdk]);
+    iframeSdk.getTopLevelUrlData({})
+      .then((d: any)=> setExperienceId(d.experienceId))
+      .catch(()=> {
+        // Fallback to route param when not embedded
+        if (params?.experienceId) setExperienceId(params.experienceId as string);
+        else setError('Missing context');
+      });
+  },[iframeSdk, params?.experienceId]);
 
   React.useEffect(()=>{
     if (!experienceId) return;

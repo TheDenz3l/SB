@@ -35,7 +35,13 @@ export default function ExperiencePage(){
       }).catch(()=> setNeedsOnboarding(true));
     }).catch(() => {
       if (!mounted) return;
-      setError("Missing Whop context — open inside Whop.");
+      // Fallback: when not embedded, use the route param so the app remains usable in dev/preview
+      if (params?.experienceId) {
+        setCtx({ experienceId: params.experienceId as string, viewType: "app" });
+        setError(null);
+      } else {
+        setError("Missing Whop context — open inside Whop.");
+      }
     });
     return () => { mounted = false; };
   }, [iframeSdk, params?.experienceId]);

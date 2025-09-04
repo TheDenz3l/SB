@@ -27,7 +27,7 @@ export default function Analytics(){
   const [weekly, setWeekly] = React.useState<number[] | null>(null);
   const [partners, setPartners] = React.useState<any[] | null>(null);
 
-  React.useEffect(()=>{ iframeSdk.getTopLevelUrlData().then(d=> setExperienceId(d.experienceId)).catch(()=> setError('Missing context')); },[iframeSdk]);
+  React.useEffect(()=>{ iframeSdk.getTopLevelUrlData({}).then(d=> setExperienceId(d.experienceId)).catch(()=> setError('Missing context')); },[iframeSdk]);
 
   React.useEffect(()=>{
     if (!experienceId) return;

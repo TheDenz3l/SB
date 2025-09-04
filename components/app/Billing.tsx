@@ -22,7 +22,7 @@ export default function Billing(){
   const [buying, setBuying] = React.useState<string | null>(null);
 
   React.useEffect(()=>{
-    iframeSdk.getTopLevelUrlData().then(d=> setExperienceId(d.experienceId)).catch(()=> setError('Missing context'));
+    iframeSdk.getTopLevelUrlData({}).then(d=> setExperienceId(d.experienceId)).catch(()=> setError('Missing context'));
   },[iframeSdk]);
 
   React.useEffect(()=>{

@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --sb-primary-600: 185 55 93;   /* #B9375D */
+  --sb-primary-500: 211 93 93;   /* #D35D5D */
+  --sb-muted-200:   231 211 212; /* #E7D3D4 */
+  --sb-base-100:    238 238 238; /* #EEEEEE */
+
+  --background: 255 255 255;
+  --foreground: 17 17 17;
+
+  --primary: var(--sb-primary-600);
+  --primary-foreground: 255 255 255;
+
+  --secondary: var(--sb-primary-500);
+  --secondary-foreground: 255 255 255;
+
+  --muted: var(--sb-muted-200);
+  --muted-foreground: 68 68 68;
+
+  --border: 230 230 230;
+  --input: 236 236 236;
+  --ring: var(--sb-primary-500);
+}
+
+html, body { background: rgb(var(--sb-base-100)); color: rgb(var(--foreground)); }
+.container { @apply max-w-6xl mx-auto px-4; }

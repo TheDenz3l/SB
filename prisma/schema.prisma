@@ -1,0 +1,164 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model CreatorProfile {
+  id            String   @id @default(cuid())
+  experienceId  String   @unique
+  title         String?
+  tags          Json     // string[] stored as JSON
+  audienceSize  Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  sentProposals Proposal[] @relation("from")
+  recvProposals Proposal[] @relation("to")
+  paymentEvents PaymentEvent[]
+  invoices      Invoice[]
+  boostCredits  BoostCredit[]
+}
+
+model Proposal {
+  id        String         @id @default(cuid())
+  fromId    String
+  toId      String
+  from      CreatorProfile @relation("from", fields: [fromId], references: [id])
+  to        CreatorProfile @relation("to", fields: [toId], references: [id])
+  status    ProposalStatus @default(pending)
+  window    String?
+  offer     String?
+  aiCopy    String?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  swap      Swap?
+
+  @@index([toId, status, createdAt])
+  @@index([fromId, status, createdAt])
+}
+
+enum ProposalStatus {
+  pending
+  accepted
+  declined
+  expired
+}
+
+model Swap {
+  id          String   @id @default(cuid())
+  proposalId  String   @unique
+  proposal    Proposal @relation(fields: [proposalId], references: [id])
+  utmToken    String
+  autoPost    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  clickEvents ClickEvent[]
+  attributions Attribution[]
+}
+
+model ClickEvent {
+  id        String   @id @default(cuid())
+  swapId    String
+  swap      Swap     @relation(fields: [swapId], references: [id])
+  ipHash    String
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([swapId, createdAt])
+}
+
+model Attribution {
+  id          String   @id @default(cuid())
+  memberId    String   @unique
+  swapId      String
+  swap        Swap     @relation(fields: [swapId], references: [id])
+  firstPaidAt DateTime?
+  lastTouchAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PaymentEvent {
+  id          String       @id @default(cuid())
+  externalId  String       @unique
+  creatorId   String?
+  creator     CreatorProfile? @relation(fields: [creatorId], references: [id])
+  memberId    String?
+  amountCents Int
+  currency    String
+  ts          DateTime
+  kind        PaymentKind
+  raw         Json?
+  createdAt   DateTime @default(now())
+
+  @@index([creatorId, ts])
+  @@index([memberId, ts])
+}
+
+enum PaymentKind {
+  payment
+  refund
+}
+
+model Invoice {
+  id              String         @id @default(cuid())
+  creatorId       String
+  creator         CreatorProfile @relation(fields: [creatorId], references: [id])
+  periodStart     DateTime
+  periodEnd       DateTime
+  successFeeCents Int
+  minimumCents    Int
+  amountDueCents  Int
+  status          InvoiceStatus  @default(open)
+  createdAt       DateTime       @default(now())
+
+  @@index([creatorId, periodStart])
+  @@unique([creatorId, periodStart])
+}
+
+enum InvoiceStatus {
+  open
+  paid
+  void
+}
+
+model BoostCredit {
+  id         String         @id @default(cuid())
+  creatorId  String
+  creator    CreatorProfile @relation(fields: [creatorId], references: [id])
+  credits    Int            @default(0)
+  consumed   Int            @default(0)
+  expiresAt  DateTime
+  createdAt  DateTime       @default(now())
+  dispatches BoostDispatch[]
+
+  @@index([creatorId, expiresAt])
+}
+
+model BoostDispatch {
+  id            String      @id @default(cuid())
+  boostCreditId String
+  boostCredit   BoostCredit @relation(fields: [boostCreditId], references: [id])
+  partnerId     String
+  createdAt     DateTime    @default(now())
+
+  @@unique([boostCreditId, partnerId])
+}
+
+model JobRun {
+  id        String   @id @default(cuid())
+  jobName   String
+  key       String
+  createdAt DateTime @default(now())
+
+  @@unique([jobName, key])
+}
+
+model Idempotency {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime?
+}

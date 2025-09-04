@@ -19,7 +19,7 @@ export default function ExperiencePage(){
 
   React.useEffect(() => {
     let mounted = true;
-    iframeSdk.getTopLevelUrlData().then((data) => {
+    iframeSdk.getTopLevelUrlData({}).then((data) => {
       if (!mounted) return;
       setCtx({ experienceId: data.experienceId, viewType: data.viewType });
       if (params?.experienceId && data.experienceId && params.experienceId !== data.experienceId) {

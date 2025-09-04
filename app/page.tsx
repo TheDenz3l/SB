@@ -1,60 +1,32 @@
 "use client";
 import * as React from "react";
-import { useIframeSdk } from "@/lib/whop-compat";
-import { AppHeader } from "@/components/app/Header";
 
 export default function RootPage() {
-  const [error, setError] = React.useState<string | null>(null);
-  const [loading, setLoading] = React.useState(true);
-  const iframeSdk = useIframeSdk();
+  const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
-    let mounted = true;
-    
-    // Try to get context from Whop SDK and redirect to proper experience page
-    iframeSdk.getTopLevelUrlData({}).then((data: any) => {
-      if (!mounted) return;
-      
-      if (data.experienceId) {
-        // Redirect to the proper experience page
-        window.location.href = `/experiences/${data.experienceId}`;
-      } else {
-        setError("No experience ID found. Please access this app through Whop.");
-        setLoading(false);
-      }
-    }).catch(() => {
-      if (!mounted) return;
-      setError("This app must be accessed through Whop. Please open it from your Whop workspace.");
-      setLoading(false);
-    });
+    setMounted(true);
+  }, []);
 
-    return () => { mounted = false; };
-  }, [iframeSdk]);
-
-  if (loading) {
-    return (
-      <main>
-        <AppHeader title="Swapboard" />
-        <div className="container mt-8 text-center">
-          <div className="text-sm text-neutral-600">Loading...</div>
-        </div>
-      </main>
-    );
+  if (!mounted) {
+    return <div>Loading...</div>;
   }
 
-  if (error) {
-    return (
-      <main>
-        <AppHeader title="Swapboard" />
-        <div className="container mt-8 text-center">
-          <div className="rounded-xl bg-muted px-6 py-4 text-sm max-w-md mx-auto">
-            <h2 className="font-semibold mb-2">Access Required</h2>
-            <p className="text-neutral-600">{error}</p>
-          </div>
+  return (
+    <main className="p-8">
+      <div className="max-w-md mx-auto text-center">
+        <h1 className="text-2xl font-bold mb-4">Swapboard</h1>
+        <div className="rounded-xl bg-gray-100 px-6 py-4 text-sm">
+          <h2 className="font-semibold mb-2">Welcome to Swapboard</h2>
+          <p className="text-gray-600 mb-4">
+            This app is designed to work within the Whop platform. 
+            Please access it through your Whop workspace.
+          </p>
+          <p className="text-xs text-gray-500">
+            If you&apos;re seeing this page, the app is working correctly but needs to be accessed through the proper Whop experience URL.
+          </p>
         </div>
-      </main>
-    );
-  }
-
-  return null;
+      </div>
+    </main>
+  );
 }

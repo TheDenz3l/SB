@@ -1,4 +1,5 @@
-import { prisma } from "@/lib/db";
+// Use runtime Prisma to avoid instantiating the client during build
+// (Vercel build can fail if DATABASE_URL is not available at build-time).
 
 export function monthRange(year: number, month: number) {
   const periodStart = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0));
@@ -24,6 +25,8 @@ function feeCents(amountCents: number) {
 const MEMBER_CAP_CENTS = 50_00;
 
 export async function computeSuccessFeeCents(creatorId: string, periodStart: Date, periodEnd: Date) {
+  const { getPrisma } = await import("@/lib/db-dynamic");
+  const prisma = await getPrisma();
   // Load all attributed payment events up to periodEnd for this creator
   const events = await prisma.paymentEvent.findMany({
     where: { creatorId, ts: { lt: periodEnd } },
@@ -71,6 +74,8 @@ export async function computeSuccessFeeCents(creatorId: string, periodStart: Dat
 }
 
 export async function closeInvoiceForCreator(creatorId: string, periodStart: Date, periodEnd: Date) {
+  const { getPrisma } = await import("@/lib/db-dynamic");
+  const prisma = await getPrisma();
   // idempotent by unique(creatorId, periodStart)
   const existing = await prisma.invoice.findUnique({ where: { creatorId_periodStart: { creatorId, periodStart } } });
   if (existing) return existing;
@@ -88,4 +93,3 @@ export async function closeInvoiceForCreator(creatorId: string, periodStart: Dat
   }});
   return invoice;
 }
-

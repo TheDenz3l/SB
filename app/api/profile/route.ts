@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
-import { prisma } from "@/lib/db";
 
 function parseTags(input: unknown): string[] {
   if (Array.isArray(input)) return input.filter((x): x is string => typeof x === "string");
@@ -10,6 +9,8 @@ function parseTags(input: unknown): string[] {
 }
 
 export async function GET(req: NextRequest) {
+  const { getPrisma } = await import("@/lib/db-dynamic");
+  const prisma = await getPrisma();
   const url = new URL(req.url);
   const experienceId = url.searchParams.get("experienceId");
   if (!experienceId) return NextResponse.json({ ok: false, error: "missing-experienceId" }, { status: 400 });
@@ -18,6 +19,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const { getPrisma } = await import("@/lib/db-dynamic");
+  const prisma = await getPrisma();
   const body = await req.json().catch(() => null) as any;
   const experienceId = body?.experienceId as string | undefined;
   const title = (body?.title ?? null) as string | null;

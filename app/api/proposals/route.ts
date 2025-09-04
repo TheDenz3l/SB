@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
-import { prisma } from "@/lib/db";
 import { generateUtmToken } from "@/lib/attribution";
 
 function bad(status: number, error: string) {
@@ -17,6 +16,8 @@ function genCopy({ fromTitle, toTitle, window, offer }: { fromTitle: string; toT
 }
 
 export async function GET(req: NextRequest) {
+  const { getPrisma } = await import("@/lib/db-dynamic");
+  const prisma = await getPrisma();
   const url = new URL(req.url);
   const experienceId = url.searchParams.get("experienceId");
   const box = url.searchParams.get("box") || "inbox"; // inbox | sent
@@ -62,6 +63,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const { getPrisma } = await import("@/lib/db-dynamic");
+  const prisma = await getPrisma();
   const body = await req.json().catch(() => null) as any;
   const experienceId = body?.experienceId as string | undefined; // sender
   const toProfileId = body?.toProfileId as string | undefined;
@@ -96,6 +99,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
+  const { getPrisma } = await import("@/lib/db-dynamic");
+  const prisma = await getPrisma();
   const body = await req.json().catch(() => null) as any;
   const experienceId = body?.experienceId as string | undefined; // actor
   const proposalId = body?.id as string | undefined;

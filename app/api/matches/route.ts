@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
-import { prisma } from "@/lib/db";
 
 type Vec = Map<string, number>;
 
@@ -31,6 +30,8 @@ function sizePenalty(a: number, b: number, alpha = 0.6): number {
 }
 
 export async function GET(req: NextRequest) {
+  const { getPrisma } = await import("@/lib/db-dynamic");
+  const prisma = await getPrisma();
   const url = new URL(req.url);
   const experienceId = url.searchParams.get("experienceId");
   if (!experienceId) return NextResponse.json({ ok: false, error: "missing-experienceId" }, { status: 400 });

@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
-import { prisma } from "@/lib/db";
 
 export async function GET() {
+  const { getPrisma } = await import("@/lib/db-dynamic");
+  const prisma = await getPrisma();
   try {
     // Test database connection
     await prisma.$connect();

@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
-import { prisma } from "@/lib/db";
 import { env } from "@/lib/env";
 import { previousMonthRange, closeInvoiceForCreator } from "@/lib/billing";
 
 function unauthorized() { return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 }); }
 
 export async function POST(req: NextRequest) {
+  const { getPrisma } = await import("@/lib/db-dynamic");
+  const prisma = await getPrisma();
   if (!env.CRON_SECRET) return unauthorized();
   const secret = req.headers.get("x-cron-secret");
   if (secret !== env.CRON_SECRET) return unauthorized();

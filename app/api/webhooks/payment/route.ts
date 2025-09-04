@@ -3,7 +3,6 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { env } from "@/lib/env";
 import { makeWebhookValidator, type WhopWebhookRequestBody } from "@whop/api";
-import { prisma } from "@/lib/db";
 import { parseAndVerifySignedToken } from "@/lib/crypto";
 
 // In-memory idempotency cache for dev; replace with persistent store in production
@@ -65,6 +64,8 @@ function getCurrency(d: any): string | null {
 }
 
 export async function POST(req: NextRequest) {
+  const { getPrisma } = await import("@/lib/db-dynamic");
+  const prisma = await getPrisma();
   if (!env.WHOP_WEBHOOK_SECRET) {
     return NextResponse.json({ ok: false, error: "missing-webhook-secret" }, { status: 500 });
   }

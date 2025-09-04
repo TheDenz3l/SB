@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
-import { prisma } from "@/lib/db";
 
 function bad(status: number, error: string) {
   return NextResponse.json({ ok: false, error }, { status });
@@ -22,6 +21,9 @@ function fmtDuration(ms: number) {
 }
 
 export async function GET(req: NextRequest) {
+  const { getPrisma } = await import("@/lib/db-dynamic");
+  const prisma = await getPrisma();
+  
   const url = new URL(req.url);
   const experienceId = url.searchParams.get("experienceId");
   if (!experienceId) return bad(400, "missing-experienceId");

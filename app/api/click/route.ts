@@ -3,13 +3,14 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { env, constants } from "@/lib/env";
 import { parseAndVerifySignedToken } from "@/lib/crypto";
-import { prisma } from "@/lib/db";
 import { getClientIp, hashIp } from "@/lib/attribution";
 
 // naive in-memory rate limiter (dev only). Replace with a durable store in prod
 const rl = new Map<string, { count: number; ts: number }>();
 
 export async function GET(req: NextRequest) {
+  const { getPrisma } = await import("@/lib/db-dynamic");
+  const prisma = await getPrisma();
   const url = new URL(req.url);
   const token = url.searchParams.get("sb");
   const secret = env.WHOP_UTM_HMAC_SECRET;

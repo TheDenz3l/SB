@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 export async function GET() {
   const required = [
@@ -28,4 +30,3 @@ export async function GET() {
     time: new Date().toISOString(),
   });
 }
-

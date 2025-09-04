@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 import { prisma } from "@/lib/db";
 
 function bad(status: number, error: string) {
@@ -29,4 +31,3 @@ export async function POST(req: NextRequest) {
   const entry = await prisma.boostCredit.create({ data: { creatorId: me.id, credits, expiresAt } });
   return NextResponse.json({ ok: true, entry });
 }
-

@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 import { prisma } from "@/lib/db";
 
 function bad(status: number, error: string) {
@@ -109,4 +111,3 @@ export async function GET(req: NextRequest) {
     topPartners,
   });
 }
-

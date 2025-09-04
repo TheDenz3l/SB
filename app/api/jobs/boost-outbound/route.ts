@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 import { prisma } from "@/lib/db";
 import { env } from "@/lib/env";
 
@@ -75,4 +77,3 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ ok: true, created: createdTotal });
 }
-

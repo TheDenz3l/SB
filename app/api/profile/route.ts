@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 import { prisma } from "@/lib/db";
 
 function parseTags(input: unknown): string[] {
@@ -31,4 +33,3 @@ export async function POST(req: NextRequest) {
   });
   return NextResponse.json({ ok: true, profile });
 }
-

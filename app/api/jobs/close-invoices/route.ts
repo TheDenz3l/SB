@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 import { prisma } from "@/lib/db";
 import { env } from "@/lib/env";
 import { previousMonthRange, closeInvoiceForCreator } from "@/lib/billing";
@@ -29,4 +31,3 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ ok: true, periodStart, periodEnd, closed });
 }
-

@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 import { env, constants } from "@/lib/env";
 import { parseAndVerifySignedToken } from "@/lib/crypto";
 import { prisma } from "@/lib/db";

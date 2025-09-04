@@ -101,3 +101,4 @@ IP_HASH_SALT=your_ip_hash_salt
 
 ## 🚀 Deployment Ready
 This project has been pushed to GitHub and is ready for deployment to Vercel or other platforms.
+# Force deployment

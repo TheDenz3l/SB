@@ -9,25 +9,22 @@ export const env = {
   CRON_SECRET: process.env.CRON_SECRET || "",
 };
 
-const isProd = process.env.NODE_ENV === "production";
+// During Next.js build, modules run in a special context where many
+// runtime envs are not available. We only hard-fail in real runtime.
+const isProdRuntime = process.env.NODE_ENV === "production" && !!process.env.NEXT_RUNTIME;
 
 function assert(name: keyof typeof env) {
   const val = env[name];
   if (!val) {
     const msg = `[env] Missing required env var: ${name}`;
-    if (isProd) throw new Error(msg);
+    if (isProdRuntime) throw new Error(msg);
     // eslint-disable-next-line no-console
     console.warn(msg);
   }
 }
 
-// Validate required variables on import (server-side usage)
-assert("NEXT_PUBLIC_WHOP_APP_ID");
-assert("WHOP_API_KEY");
-// For security-sensitive flows; allow missing in dev but warn
-assert("WHOP_WEBHOOK_SECRET");
-assert("WHOP_UTM_HMAC_SECRET");
-assert("IP_HASH_SALT");
+// Do not hard-assert at import time; runtime routes should
+// verify required vars before use to avoid breaking builds.
 // Optional: boost plan IDs (used if awarding credits via webhook)
 // In dev, we warn when missing instead of throwing.
 if (!env.BOOST_PLAN_ID_ONE) console.warn("[env] Optional env var missing: BOOST_PLAN_ID_ONE");

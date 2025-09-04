@@ -18,8 +18,7 @@ export function getClientIp(req: NextRequest): string | null {
   const xr = req.headers.get("x-real-ip");
   if (xr) return xr.trim();
   // NextRequest may expose ip via geo in some deployments; fallback null
-  // @ts-expect-error ip may exist in some envs
-  if (req.ip) return (req as any).ip as string;
+  const anyReq = req as any;
+  if (anyReq && typeof anyReq.ip === 'string' && anyReq.ip) return anyReq.ip as string;
   return null;
 }
-

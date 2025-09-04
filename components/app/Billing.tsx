@@ -2,7 +2,7 @@ import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TBody, THead, TH, TR, TD } from "@/components/ui/table";
-import { useIframeSdk } from "@whop/react";
+import { useIframeSdk } from "@/lib/whop-compat";
 
 type Invoice = { id: string; periodStart: string; periodEnd: string; successFeeCents: number; minimumCents: number; amountDueCents: number; status: string };
 
@@ -22,7 +22,7 @@ export default function Billing(){
   const [buying, setBuying] = React.useState<string | null>(null);
 
   React.useEffect(()=>{
-    iframeSdk.getTopLevelUrlData({}).then(d=> setExperienceId(d.experienceId)).catch(()=> setError('Missing context'));
+    iframeSdk.getTopLevelUrlData({}).then((d: any)=> setExperienceId(d.experienceId)).catch(()=> setError('Missing context'));
   },[iframeSdk]);
 
   React.useEffect(()=>{

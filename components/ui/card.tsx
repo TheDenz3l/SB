@@ -1,5 +1,5 @@
 import * as React from "react";
-import { clsx } from "clsx";
+import clsx from "clsx";
 
 export function Card({ className, children }: React.PropsWithChildren<{ className?: string }>) {
   return <div className={clsx("bg-white rounded-2xl border border-border shadow-card", className)}>{children}</div>;

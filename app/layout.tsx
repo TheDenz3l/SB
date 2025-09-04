@@ -1,11 +1,14 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { WhopThemeScript, WhopIframeSdkProvider } from "@whop/react";
+import { WhopThemeScript, WhopIframeSdkProvider } from "@/lib/whop-compat";
 
 export const metadata: Metadata = {
   title: "Swapboard — Whop App",
   description: "Cross-promos that actually convert.",
 };
+
+// Avoid static prerendering to ensure compatibility with client-only SDKs
+export const dynamic = "force-dynamic";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   // Allow setting parent origin for dev embeds like https://<id>.apps.whop.com

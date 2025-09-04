@@ -2,7 +2,7 @@
 import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TBody, THead, TH, TR, TD } from "@/components/ui/table";
-import { useIframeSdk } from "@whop/react";
+import { useIframeSdk } from "@/lib/whop-compat";
 
 function KPI({ label, value }: { label: string; value: string }){
   return (
@@ -27,7 +27,7 @@ export default function Analytics(){
   const [weekly, setWeekly] = React.useState<number[] | null>(null);
   const [partners, setPartners] = React.useState<any[] | null>(null);
 
-  React.useEffect(()=>{ iframeSdk.getTopLevelUrlData({}).then(d=> setExperienceId(d.experienceId)).catch(()=> setError('Missing context')); },[iframeSdk]);
+  React.useEffect(()=>{ iframeSdk.getTopLevelUrlData({}).then((d: any)=> setExperienceId(d.experienceId)).catch(()=> setError('Missing context')); },[iframeSdk]);
 
   React.useEffect(()=>{
     if (!experienceId) return;

@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { useIframeSdk } from "@whop/react";
+import { useIframeSdk } from "@/lib/whop-compat";
 
 export default function DebugExperience(){
   const sdk = useIframeSdk();
@@ -9,10 +9,10 @@ export default function DebugExperience(){
 
   React.useEffect(()=>{
     let mounted = true;
-    sdk.getTopLevelUrlData({}).then(d => {
+    sdk.getTopLevelUrlData({}).then((d: any) => {
       if (!mounted) return;
       setInfo(d);
-    }).catch(e => {
+    }).catch((e: any) => {
       if (!mounted) return;
       setErr(String(e?.message || e));
     });
@@ -32,4 +32,3 @@ export default function DebugExperience(){
     </main>
   );
 }
-

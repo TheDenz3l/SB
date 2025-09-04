@@ -7,7 +7,7 @@ import Proposals from "@/components/app/Proposals";
 import Analytics from "@/components/app/Analytics";
 import Billing from "@/components/app/Billing";
 import { useParams } from "next/navigation";
-import { useIframeSdk } from "@whop/react";
+import { useIframeSdk } from "@/lib/whop-compat";
 
 export default function ExperiencePage(){
   const [tab, setTab] = React.useState("matches");
@@ -19,7 +19,7 @@ export default function ExperiencePage(){
 
   React.useEffect(() => {
     let mounted = true;
-    iframeSdk.getTopLevelUrlData({}).then((data) => {
+    iframeSdk.getTopLevelUrlData({}).then((data: any) => {
       if (!mounted) return;
       setCtx({ experienceId: data.experienceId, viewType: data.viewType });
       if (params?.experienceId && data.experienceId && params.experienceId !== data.experienceId) {

@@ -1,0 +1,25 @@
+{
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "ALLOWALL"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors 'self' https://whop.com https://*.whop.com;"
+        }
+      ]
+    }
+  ],
+  "functions": {
+    "app/api/*/route.ts": {
+      "maxDuration": 10
+    },
+    "app/api/*/*/route.ts": {
+      "maxDuration": 10
+    }
+  }
+}

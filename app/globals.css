@@ -4,14 +4,41 @@
 
 @import "@whop/react/styles.css";
 
+/* Ensure proper background and text colors */
+html, body {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+/* Fix main content area background */
+main {
+  background: transparent;
+  min-height: 100vh;
+}
+
+/* Ensure cards have proper backgrounds */
+.bg-card {
+  background: var(--card) !important;
+  color: var(--card-foreground) !important;
+}
+
+/* Fix muted backgrounds */
+.bg-muted {
+  background: var(--muted) !important;
+  color: var(--muted-foreground) !important;
+}
+
 :root {
   --sb-primary-600: 185 55 93;   /* #B9375D */
   --sb-primary-500: 211 93 93;   /* #D35D5D */
-  --sb-muted-200:   231 211 212; /* #E7D3D4 */
-  --sb-base-100:    238 238 238; /* #EEEEEE */
+  --sb-muted-200:   241 245 249; /* Light grayish blue */
+  --sb-base-100:    255 255 255; /* Pure white */
 
   --background: 255 255 255;
-  --foreground: 17 17 17;
+  --foreground: 15 23 42;
+
+  --card: 255 255 255;
+  --card-foreground: 15 23 42;
 
   --primary: var(--sb-primary-600);
   --primary-foreground: 255 255 255;
@@ -20,12 +47,42 @@
   --secondary-foreground: 255 255 255;
 
   --muted: var(--sb-muted-200);
-  --muted-foreground: 68 68 68;
+  --muted-foreground: 100 116 139;
 
-  --border: 230 230 230;
-  --input: 236 236 236;
+  --border: 226 232 240;
+  --input: 241 245 249;
   --ring: var(--sb-primary-500);
+
+  --accent: 241 245 249;
+  --accent-foreground: 15 23 42;
 }
 
-html, body { background: rgb(var(--sb-base-100)); color: rgb(var(--foreground)); }
-.container { @apply max-w-6xl mx-auto px-4; }
+html, body { 
+  background: rgb(var(--background)) !important; 
+  color: rgb(var(--foreground)) !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.container { 
+  @apply max-w-6xl mx-auto px-4;
+}
+
+/* Fix any remaining dark backgrounds */
+* {
+  border-color: rgb(var(--border));
+}
+
+/* Ensure proper styling for interactive elements */
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Fix tab styling */
+[role="tablist"] {
+  background: transparent;
+}
+
+/* Ensure onboarding message has proper styling */
+.rounded-xl {
+  border: 1px solid rgb(var(--border));
+}

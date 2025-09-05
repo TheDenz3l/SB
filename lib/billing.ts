@@ -33,9 +33,9 @@ export async function computeSuccessFeeCents(creatorId: string, periodStart: Dat
     orderBy: { ts: "asc" },
   });
   // Load attribution for involved members (firstPaidAt)
-  const memberIds = Array.from(new Set(events.map(e => e.memberId).filter(Boolean) as string[]));
+  const memberIds = Array.from(new Set(events.map((e: any) => e.memberId).filter(Boolean) as string[]));
   const atts = await prisma.attribution.findMany({ where: { memberId: { in: memberIds } } });
-  const attByMember = new Map(atts.map(a => [a.memberId, a]));
+  const attByMember = new Map(atts.map((a: any) => [a.memberId, a]));
 
   let feeThisPeriod = 0;
   const feeBefore: Record<string, number> = {};
@@ -43,7 +43,7 @@ export async function computeSuccessFeeCents(creatorId: string, periodStart: Dat
   // First, compute fee accumulated before periodStart per member (for cap tracking)
   for (const e of events) {
     if (!e.memberId) continue;
-    const att = attByMember.get(e.memberId);
+    const att = attByMember.get(e.memberId) as any;
     if (!att || !att.firstPaidAt) continue;
     const cycleIndex = monthsBetween(att.firstPaidAt, e.ts);
     if (cycleIndex < 0 || cycleIndex > 2) continue; // only first 3 cycles
@@ -57,7 +57,7 @@ export async function computeSuccessFeeCents(creatorId: string, periodStart: Dat
   // Then, compute fee in [periodStart, periodEnd), bounded by remaining cap
   for (const e of events) {
     if (!e.memberId) continue;
-    const att = attByMember.get(e.memberId);
+    const att = attByMember.get(e.memberId) as any;
     if (!att || !att.firstPaidAt) continue;
     const cycleIndex = monthsBetween(att.firstPaidAt, e.ts);
     if (cycleIndex < 0 || cycleIndex > 2) continue; // only first 3 cycles

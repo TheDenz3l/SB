@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
   if (!me) return NextResponse.json({ ok: true, activeCredits: 0, entries: [] });
   const now = new Date();
   const entries = await prisma.boostCredit.findMany({ where: { creatorId: me.id, expiresAt: { gt: now } }, orderBy: { expiresAt: "asc" } });
-  const activeCredits = entries.reduce((sum, e) => sum + Math.max(0, e.credits - e.consumed), 0);
+  const activeCredits = entries.reduce((sum: number, e: any) => sum + Math.max(0, e.credits - e.consumed), 0);
   return NextResponse.json({ ok: true, activeCredits, entries });
 }
 

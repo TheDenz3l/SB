@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "@whop/react/styles.css";
+
 :root {
   --sb-primary-600: 185 55 93;   /* #B9375D */
   --sb-primary-500: 211 93 93;   /* #D35D5D */

@@ -43,14 +43,14 @@ export async function GET(req: NextRequest) {
   // Load active boosts for partners
   const now = new Date();
   const boosts = await prisma.boostCredit.findMany({
-    where: { creatorId: { in: all.map(p=>p.id) }, expiresAt: { gt: now } }
+    where: { creatorId: { in: all.map((p: any) => p.id) }, expiresAt: { gt: now } }
   });
   const boostedIds = new Set<string>();
   for (const b of boosts) { if ((b.credits - b.consumed) > 0) boostedIds.add(b.creatorId); }
   const meTags = Array.isArray(me.tags) ? (me.tags as string[]) : [];
   const meVec = toVec(meTags);
 
-  const scored = all.map((p) => {
+  const scored = all.map((p: any) => {
     const tags = Array.isArray(p.tags) ? (p.tags as string[]) : [];
     let score = cosine(meVec, toVec(tags)) * sizePenalty(me.audienceSize, p.audienceSize);
     if (boostedIds.has(p.id)) score *= 1.25; // simple boost weighting
@@ -62,10 +62,10 @@ export async function GET(req: NextRequest) {
       score,
       boosted: boostedIds.has(p.id),
     };
-  }).filter((x) => x.score >= 0.55)
-    .sort((a, b) => b.score - a.score)
+  }).filter((x: any) => x.score >= 0.55)
+    .sort((a: any, b: any) => b.score - a.score)
     .slice(0, 12)
-    .map((x) => ({
+    .map((x: any) => ({
       id: x.id,
       name: x.title,
       tags: x.tags,

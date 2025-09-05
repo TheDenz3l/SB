@@ -44,18 +44,18 @@ export async function POST(req: NextRequest) {
     const meTags = Array.isArray(me.tags) ? (me.tags as string[]) : [];
     const meVec = toVec(meTags);
     const partners = await prisma.creatorProfile.findMany({ where: { NOT: { id: me.id } } });
-    const scored = partners.map((p)=>{
+    const scored = partners.map((p: any) => {
       const tags = Array.isArray(p.tags) ? (p.tags as string[]) : [];
       const score = cosine(meVec, toVec(tags)) * sizePenalty(me.audienceSize, p.audienceSize);
       return { partner: p, score };
-    }).filter(x=> x.score >= 0.55).sort((a,b)=> b.score - a.score);
+    }).filter((x: any) => x.score >= 0.55).sort((a: any, b: any) => b.score - a.score);
 
     // Exclusions: existing recent proposals and already dispatched for this boost
     const since = new Date(Date.now() - 14*24*3600*1000);
     const recent = await prisma.proposal.findMany({ where: { fromId: me.id, createdAt: { gte: since } }, select: { toId: true } });
-    const recentSet = new Set(recent.map(r=> r.toId));
+    const recentSet = new Set(recent.map((r: any) => r.toId));
     const dispatched = await prisma.boostDispatch.findMany({ where: { boostCreditId: boost.id }, select: { partnerId: true } });
-    const dispatchedSet = new Set(dispatched.map(d=> d.partnerId));
+    const dispatchedSet = new Set(dispatched.map((d: any) => d.partnerId));
 
     let remaining = allowed;
     for (const { partner } of scored) {

@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import { frostedThemePlugin } from "@whop/react/tailwind";
 
 const config: Config = {
   content: [
@@ -34,6 +35,6 @@ const config: Config = {
       }
     },
   },
-  plugins: [],
+  plugins: [frostedThemePlugin()],
 };
 export default config;

@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: "desc" },
       include: { from: true, swap: true },
     });
-    return NextResponse.json({ ok: true, proposals: proposals.map(p => ({
+    return NextResponse.json({ ok: true, proposals: proposals.map((p: any) => ({
       id: p.id,
       partnerName: p.from.title ?? p.from.experienceId,
       status: p.status,
@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: "desc" },
       include: { to: true, swap: true },
     });
-    return NextResponse.json({ ok: true, proposals: proposals.map(p => ({
+    return NextResponse.json({ ok: true, proposals: proposals.map((p: any) => ({
       id: p.id,
       partnerName: p.to.title ?? p.to.experienceId,
       status: p.status,

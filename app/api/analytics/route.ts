@@ -40,10 +40,10 @@ export async function GET(req: NextRequest) {
   const payments8w = await prisma.paymentEvent.findMany({ where: { creatorId: creator.id, ts: { gte: since8w } } });
 
   // KPI: New paying members (unique memberIds in 30d payments)
-  const newMembers = new Set((payments30d.filter(p=>p.kind==='payment').map(p=>p.memberId).filter(Boolean) as string[]));
+  const newMembers = new Set((payments30d.filter((p: any) => p.kind === 'payment').map((p: any) => p.memberId).filter(Boolean) as string[]));
 
   // KPI: Attributed revenue (net) in 30d
-  const revenue30dCents = payments30d.reduce((s,p)=> s + p.amountCents, 0);
+  const revenue30dCents = payments30d.reduce((s: number, p: any) => s + p.amountCents, 0);
 
   // KPI: Acceptance rate (sent proposals only)
   const sentAccepted = await prisma.proposal.count({ where: { fromId: creator.id, status: 'accepted' } });
@@ -59,12 +59,12 @@ export async function GET(req: NextRequest) {
   for (let i = 7; i >= 0; i--) {
     const start = new Date(now.getTime() - (i+1)*7*24*3600*1000);
     const end = new Date(now.getTime() - i*7*24*3600*1000);
-    const sum = payments8w.filter(p=> p.ts >= start && p.ts < end).reduce((s,p)=> s + p.amountCents, 0);
+    const sum = payments8w.filter((p: any) => p.ts >= start && p.ts < end).reduce((s: number, p: any) => s + p.amountCents, 0);
     weeklyRevenueCents.push(sum);
   }
 
   // Top partners by revenue (8w), counting clicks and paid members
-  const memberIds = Array.from(new Set(payments8w.map(p=>p.memberId).filter(Boolean) as string[]));
+  const memberIds = Array.from(new Set(payments8w.map((p: any) => p.memberId).filter(Boolean) as string[]));
   let topPartners: Array<{ partnerId: string; partnerName: string; clicks: number; paidMembers: number; revenueCents: number }>= [];
   if (memberIds.length > 0) {
     const atts = await prisma.attribution.findMany({ where: { memberId: { in: memberIds } }, include: { swap: { include: { proposal: { include: { from: true, to: true } } } } } });
@@ -90,14 +90,14 @@ export async function GET(req: NextRequest) {
     // Load clicks for those swapIds
     const allSwapIds = Array.from(new Set(Array.from(agg.values()).flatMap(v=> Array.from(v.swapIds))));
     const clicks = allSwapIds.length ? await prisma.clickEvent.groupBy({ by: ['swapId'], where: { swapId: { in: allSwapIds } }, _count: { swapId: true } }) : [];
-    const clicksBySwap = new Map(clicks.map(c=> [c.swapId, c._count.swapId]));
+    const clicksBySwap = new Map(clicks.map((c: any) => [c.swapId, c._count.swapId]));
 
     topPartners = Array.from(agg.entries()).map(([partnerId, v])=> ({
       partnerId,
       partnerName: v.partnerName,
       revenueCents: v.revenueCents,
       paidMembers: v.members.size,
-      clicks: Array.from(v.swapIds).reduce((s, id)=> s + (clicksBySwap.get(id) || 0), 0),
+      clicks: Array.from(v.swapIds).reduce((s: number, id: string) => s + ((clicksBySwap.get(id) as number) || 0), 0),
     })).sort((a,b)=> b.revenueCents - a.revenueCents).slice(0, 5);
   }
 

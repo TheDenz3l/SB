@@ -16,14 +16,22 @@ export default function Matches({ experienceId }: { experienceId: string }) {
   React.useEffect(() => {
     let mounted = true;
     setMatches(null); setError(null);
-    fetch(`/api/matches?experienceId=${experienceId}`).then(r=>r.json()).then((j)=>{
-      if (!mounted) return;
-      if (!j?.ok) throw new Error(j?.error || "Failed to fetch matches");
-      setMatches(j.matches || []);
-    }).catch((e)=>{
-      if (!mounted) return;
-      setError(e?.message || "Failed to load matches");
-    });
+    fetch(`/api/matches?experienceId=${experienceId}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((j) => {
+        if (!mounted) return;
+        if (!j?.ok) throw new Error(j?.error || "Failed to fetch matches");
+        setMatches(j.matches || []);
+      })
+      .catch((e) => {
+        if (!mounted) return;
+        setError(e?.message || "Failed to load matches");
+      });
     return () => { mounted = false };
   }, [experienceId]);
 

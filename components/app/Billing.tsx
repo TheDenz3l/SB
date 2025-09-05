@@ -37,14 +37,30 @@ export default function Billing(){
   React.useEffect(()=>{
     if (!experienceId) return;
     setError(null); setSummary(null); setInvoices(null);
-    fetch(`/api/invoices?experienceId=${experienceId}`).then(r=>r.json()).then(j=>{
-      if (!j.ok) throw new Error(j.error || 'Failed to load invoices');
-      setSummary(j.summary);
-      setInvoices(j.invoices || []);
-    }).catch(e=> setError(e.message || 'Failed to load invoices'));
-    fetch(`/api/boosts?experienceId=${experienceId}`).then(r=>r.json()).then(j=>{
-      if (j.ok) setBoosts({ activeCredits: j.activeCredits });
-    }).catch(()=>{});
+    fetch(`/api/invoices?experienceId=${experienceId}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((j) => {
+        if (!j.ok) throw new Error(j.error || 'Failed to load invoices');
+        setSummary(j.summary);
+        setInvoices(j.invoices || []);
+      })
+      .catch((e) => setError(e.message || 'Failed to load invoices'));
+    fetch(`/api/boosts?experienceId=${experienceId}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((j) => {
+        if (j.ok) setBoosts({ activeCredits: j.activeCredits });
+      })
+      .catch(() => {});
   },[experienceId]);
 
   async function buy(planId: string){
@@ -56,7 +72,19 @@ export default function Billing(){
       const res = await sdk.inAppPurchase({ planId });
       if (res.status === 'ok') {
         // webhook will grant credits; refresh after a short delay
-        setTimeout(()=> experienceId && fetch(`/api/boosts?experienceId=${experienceId}`).then(r=>r.json()).then(j=> setBoosts({ activeCredits: j.activeCredits })).catch(()=>{}), 1500);
+        setTimeout(() => {
+          if (experienceId) {
+            fetch(`/api/boosts?experienceId=${experienceId}`)
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+              })
+              .then((j) => setBoosts({ activeCredits: j.activeCredits }))
+              .catch(() => {});
+          }
+        }, 1500);
       }
     } finally {
       setBuying(null);

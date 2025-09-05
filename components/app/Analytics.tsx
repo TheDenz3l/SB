@@ -43,10 +43,19 @@ export default function Analytics(){
   React.useEffect(()=>{
     if (!experienceId) return;
     setLoading(true); setError(null);
-    fetch(`/api/analytics?experienceId=${experienceId}`).then(r=>r.json()).then(j=>{
-      if (!j.ok) throw new Error(j.error || 'Failed to load analytics');
-      setKpis(j.kpis); setWeekly(j.weeklyRevenueCents); setPartners(j.topPartners);
-    }).catch(e=> setError(e.message || 'Failed to load analytics')).finally(()=> setLoading(false));
+    fetch(`/api/analytics?experienceId=${experienceId}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((j) => {
+        if (!j.ok) throw new Error(j.error || 'Failed to load analytics');
+        setKpis(j.kpis); setWeekly(j.weeklyRevenueCents); setPartners(j.topPartners);
+      })
+      .catch((e) => setError(e.message || 'Failed to load analytics'))
+      .finally(() => setLoading(false));
   },[experienceId]);
 
   const maxWeekly = weekly ? Math.max(1, ...weekly.map(v=> Math.abs(v))) : 1;

@@ -27,13 +27,24 @@ export default function ExperiencePage(){
         setError("Experience mismatch — please open via Whop.");
       }
       // Probe profile to determine if onboarding is needed
-      fetch(`/api/profile?experienceId=${data.experienceId}`).then(r=>r.json()).then((j)=>{
-        if (j?.profile?.audienceSize && Array.isArray(j?.profile?.tags) && j.profile.tags.length>0) {
-          setNeedsOnboarding(false);
-        } else {
+      fetch(`/api/profile?experienceId=${data.experienceId}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((j) => {
+          if (j?.profile?.audienceSize && Array.isArray(j?.profile?.tags) && j.profile.tags.length > 0) {
+            setNeedsOnboarding(false);
+          } else {
+            setNeedsOnboarding(true);
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching profile:', error);
           setNeedsOnboarding(true);
-        }
-      }).catch(()=> setNeedsOnboarding(true));
+        });
     }).catch(() => {
       if (!mounted) return;
       // Fallback: when not embedded, use the route param so the app remains usable in dev/preview
